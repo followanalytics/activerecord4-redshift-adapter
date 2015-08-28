@@ -425,7 +425,11 @@ module ActiveRecord
           end
 
           type_map.fetch(oid, fmod, sql_type) {
-            warn "unknown OID #{oid}: failed to recognize type of '#{column_name}'. It will be treated as String."
+            # oid=2205 maps to t2.oid::regclass, which seems to do fine as string
+            if oid != 2205
+              warn "unknown OID #{oid}: failed to recognize type of '#{column_name}'. It will be treated as String."
+            end
+
             Type::Value.new.tap do |cast_type|
               type_map.register_type(oid, cast_type)
             end
