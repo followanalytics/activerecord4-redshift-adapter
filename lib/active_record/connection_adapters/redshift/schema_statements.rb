@@ -350,27 +350,17 @@ module ActiveRecord
 
         # Returns just a table's primary key
         def primary_key(table)
-          # pks = exec_query(<<-end_sql, 'SCHEMA').rows
-          #   SELECT DISTINCT attr.attname
-          #   FROM pg_attribute attr
-          #   INNER JOIN pg_depend dep ON attr.attrelid = dep.refobjid AND attr.attnum = dep.refobjsubid
-          #   INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = cons.conkey[1]
-          #   WHERE cons.contype = 'p'
-          #     AND dep.refobjid = '#{quote_table_name(table)}'::regclass
-          # end_sql
+          pks = exec_query(<<-end_sql, 'SCHEMA').rows
+            SELECT DISTINCT attr.attname
+            FROM pg_attribute attr
+            INNER JOIN pg_depend dep ON attr.attrelid = dep.refobjid AND attr.attnum = dep.refobjsubid
+            INNER JOIN pg_constraint cons ON attr.attrelid = cons.conrelid AND attr.attnum = cons.conkey[1]
+            WHERE cons.contype = 'p'
+              AND dep.refobjid = '#{quote_table_name(table)}'::regclass
+          end_sql
 
-          # return nil unless pks.count == 1
-          # pks[0][0]
-
-          # Redshift doesn't have primary keys. One can set them, but they are not enforced at all,
-          # just ignored. I only found SchemaDump calling this method. It uses this to check if
-          # a column is a primary key or not. However, it only supports primary key columns of
-          # integer, bigint and uuid types. If you use an 'id' labed column with a different type,
-          # like string, rake's schema:load task will generate you column with the wrong type.
-          # We will nil forcing it to generate the proper column definition.
-          # If this is called for something else, we might need to patch SchemaDump so that it
-          # ignores pk definitions for Redshift alone.
-          nil
+          return nil unless pks.count == 1
+          pks[0][0]
         end
 
         # Renames a table.
