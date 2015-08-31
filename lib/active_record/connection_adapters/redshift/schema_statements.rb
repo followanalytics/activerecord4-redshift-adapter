@@ -350,6 +350,9 @@ module ActiveRecord
 
         # Returns just a table's primary key
         def primary_key(table)
+          # Passing the env variable REDSHIFT_SCHEMA will allow the correct generation of id
+          # fields that are not of integer/uuid/serial type
+          return if ENV['REDSHIFT_SCHEMA']
           pks = exec_query(<<-end_sql, 'SCHEMA').rows
             SELECT DISTINCT attr.attname
             FROM pg_attribute attr
