@@ -43,7 +43,7 @@ module ActiveRecord
           create_database(name, options)
         end
 
-        # Create a new PostgreSQL database. Options include <tt>:owner</tt>, <tt>:template</tt>,
+        # Create a new PostgreSQL database. Options include <tt>:owner</tt>,
         # <tt>:encoding</tt> (defaults to utf8), <tt>:collation</tt>, <tt>:ctype</tt>,
         # <tt>:tablespace</tt>, and <tt>:connection_limit</tt> (note that MySQL uses
         # <tt>:charset</tt> while PostgreSQL uses <tt>:encoding</tt>).
@@ -58,8 +58,6 @@ module ActiveRecord
             memo += case key
             when :owner
               " OWNER = \"#{value}\""
-            when :template
-              " TEMPLATE = \"#{value}\""
             when :encoding
               " ENCODING = '#{value}'"
             when :collation
