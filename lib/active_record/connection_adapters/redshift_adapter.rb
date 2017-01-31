@@ -130,13 +130,16 @@ module ActiveRecord
       def prepare_column_options(column, types) # :nodoc:
         spec = super
         spec[:array] = 'true' if column.respond_to?(:array) && column.array
-        spec[:default] = "\"#{column.default_function}\"" if column.default_function
+        if column.default_function
+          spec.delete(:default) # lets remove any DEFAULT that might be set
+          spec[:default_function] = "\"#{column.default_function}\""
+        end
         spec
       end
 
       # Adds +:array+ as a valid migration key
       def migration_keys
-        super + [:array]
+        super + [:array, :default_function]
       end
 
       # Returns +true+, since this connection adapter supports prepared statement
