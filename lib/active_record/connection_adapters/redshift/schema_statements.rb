@@ -24,6 +24,10 @@ module ActiveRecord
           else
             super
           end
+          if options[:default_function] || column.try(:default_function)
+            sql << " DEFAULT #{column.default_function}"
+          end
+          sql
         end
 
         def type_for_column(column)

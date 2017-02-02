@@ -90,7 +90,7 @@ module ActiveRecord
       end
 
       class ColumnDefinition < ActiveRecord::ConnectionAdapters::ColumnDefinition
-        attr_accessor :array
+        attr_accessor :array, :default_function
       end
 
       class TableDefinition < ActiveRecord::ConnectionAdapters::TableDefinition
@@ -134,6 +134,7 @@ module ActiveRecord
         def new_column_definition(name, type, options) # :nodoc:
           column = super
           column.array = options[:array]
+          column.default_function = options[:default_function]
           column
         end
 
