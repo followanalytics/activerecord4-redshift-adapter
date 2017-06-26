@@ -591,7 +591,7 @@ module ActiveRecord
 
           if pgerror.is_a?(PG::ConnectionBad)
             @logger.warn 'RedshiftAdapter#exec_no_cache: CONNECTION BAD! Retrying...' if @logger
-            reconnect!
+            reconnect! rescue nil # to prevent error PG::Error: invalid encoding name: utf8
             retry
           end
 
@@ -612,7 +612,7 @@ module ActiveRecord
 
           if pgerror.is_a?(PG::ConnectionBad)
             @logger.warn 'RedshiftAdapter#exec_cache: CONNECTION BAD! Retrying...' if @logger
-            reconnect!
+            reconnect! rescue nil # to prevent error PG::Error: invalid encoding name: utf8
             retry
           end
 
