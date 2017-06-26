@@ -586,6 +586,16 @@ module ActiveRecord
 
         def exec_no_cache(sql, name, binds)
           log(sql, name, binds) { @connection.async_exec(sql, []) }
+        rescue ActiveRecord::StatementInvalid => e
+          pgerror = e.original_exception
+
+          if pgerror.is_a?(PG::ConnectionBad)
+            @logger.warn 'RedshiftAdapter#exec_no_cache: CONNECTION BAD! Retrying...' if @logger
+            reconnect!
+            retry
+          end
+
+          raise e
         end
 
         def exec_cache(sql, name, binds)
@@ -599,6 +609,12 @@ module ActiveRecord
           end
         rescue ActiveRecord::StatementInvalid => e
           pgerror = e.original_exception
+
+          if pgerror.is_a?(PG::ConnectionBad)
+            @logger.warn 'RedshiftAdapter#exec_cache: CONNECTION BAD! Retrying...' if @logger
+            reconnect!
+            retry
+          end
 
           # Get the PG code for the failure.  Annoyingly, the code for
           # prepared statements whose return value may have changed is
