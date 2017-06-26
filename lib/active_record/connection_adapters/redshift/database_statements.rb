@@ -146,6 +146,16 @@ module ActiveRecord
           log(sql, name) do
             result_as_array @connection.async_exec(sql)
           end
+        rescue ActiveRecord::StatementInvalid => e
+          pgerror = e.original_exception
+
+          if pgerror.is_a?(PG::ConnectionBad)
+            @logger.warn 'RedshiftAdapter#query: CONNECTION BAD! Retrying...' if @logger
+            reconnect!
+            retry
+          end
+
+          raise e
         end
 
         # Executes an SQL statement, returning a PGresult object on success
@@ -154,6 +164,16 @@ module ActiveRecord
           log(sql, name) do
             @connection.async_exec(sql)
           end
+        rescue ActiveRecord::StatementInvalid => e
+          pgerror = e.original_exception
+
+          if pgerror.is_a?(PG::ConnectionBad)
+            @logger.warn 'RedshiftAdapter#execute: CONNECTION BAD! Retrying...' if @logger
+            reconnect!
+            retry
+          end
+
+          raise e
         end
 
         def exec_query(sql, name = 'SQL', binds = [])
