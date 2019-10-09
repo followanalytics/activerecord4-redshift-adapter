@@ -13,8 +13,8 @@ require 'active_record/connection_adapters/redshift/database_statements'
 
 require 'arel/visitors/bind_visitor'
 
-# Make sure we're using pg high enough for PGResult#values
-gem 'pg', '> 0.15'
+# Make sure we're using pg high enough for PG::Result#values
+gem 'pg', '>= 1.0'
 require 'pg'
 
 require 'ipaddr'
