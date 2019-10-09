@@ -148,7 +148,7 @@ module ActiveRecord
           end
         end
 
-        # Executes an SQL statement, returning a PGresult object on success
+        # Executes an SQL statement, returning a PG::Result object on success
         # or raising a PGError exception otherwise.
         def execute(sql, name = nil)
           log(sql, name) do

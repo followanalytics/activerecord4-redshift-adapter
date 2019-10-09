@@ -37,10 +37,10 @@ module ActiveRecord
       conn_params[:user] = conn_params.delete(:username) if conn_params[:username]
       conn_params[:dbname] = conn_params.delete(:database) if conn_params[:database]
 
-      # Forward only valid config params to PGconn.connect.
+      # Forward only valid config params to PG::Connection.connect.
       conn_params.keep_if { |k, _| RS_VALID_CONN_PARAMS.include?(k) }
 
-      # The postgres drivers don't allow the creation of an unconnected PGconn object,
+      # The postgres drivers don't allow the creation of an unconnected PG::Connection object,
       # so just pass a nil connection object for the time being.
       ConnectionAdapters::RedshiftAdapter.new(nil, logger, conn_params, config)
     end
@@ -186,7 +186,7 @@ module ActiveRecord
           end
 
           def connection_active?
-            @connection.status == PGconn::CONNECTION_OK
+            @connection.status == PG::Connection::CONNECTION_OK
           rescue PGError
             false
           end
@@ -537,7 +537,7 @@ module ActiveRecord
           # FEATURE_NOT_SUPPORTED.  Check here for more details:
           # http://git.postgresql.org/gitweb/?p=postgresql.git;a=blob;f=src/backend/utils/cache/plancache.c#l573
           begin
-            code = pgerror.result.result_error_field(PGresult::PG_DIAG_SQLSTATE)
+            code = pgerror.result.result_error_field(PG::Result::PG_DIAG_SQLSTATE)
           rescue
             raise e
           end
@@ -576,7 +576,7 @@ module ActiveRecord
         # Connects to a PostgreSQL server and sets up the adapter depending on the
         # connected server's characteristics.
         def connect
-          @connection = PGconn.connect(@connection_parameters)
+          @connection = PG::Connection.connect(@connection_parameters)
 
           configure_connection
         rescue ::PG::Error => error
