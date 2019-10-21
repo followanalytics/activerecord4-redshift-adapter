@@ -245,7 +245,7 @@ module ActiveRecord
         unless @connection.transaction_status == ::PG::PQTRANS_IDLE
           @connection.query 'ROLLBACK'
         end
-        @connection.query 'DISCARD ALL'
+        #@connection.query 'DISCARD ALL'
         configure_connection
       end
 
