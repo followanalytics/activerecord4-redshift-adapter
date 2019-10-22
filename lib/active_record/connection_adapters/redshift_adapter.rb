@@ -187,7 +187,7 @@ module ActiveRecord
 
           def connection_active?
             @connection.status == PG::Connection::CONNECTION_OK
-          rescue PGError
+          rescue PG::Error
             false
           end
       end
@@ -228,7 +228,7 @@ module ActiveRecord
       def active?
         @connection.query 'SELECT 1'
         true
-      rescue PGError
+      rescue PG::Error
         false
       end
 
