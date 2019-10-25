@@ -41,10 +41,10 @@ module ActiveRecord
         end
 
         # Quote date/time values for use in SQL input. Includes microseconds
-        # if the value is a Time responding to usec.
+        # if the value is a Time responding to usec and usec is not already insert.
         def quoted_date(value) #:nodoc:
           result = super
-          if value.acts_like?(:time) && value.respond_to?(:usec)
+          if value.acts_like?(:time) && value.respond_to?(:usec) && result !~ /\.#{sprintf("%06d", value.usec)}/
             result = "#{result}.#{sprintf("%06d", value.usec)}"
           end
 
