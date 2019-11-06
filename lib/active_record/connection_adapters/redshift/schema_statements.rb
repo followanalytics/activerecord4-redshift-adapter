@@ -4,24 +4,6 @@ module ActiveRecord
       class SchemaCreation < AbstractAdapter::SchemaCreation
         private
 
-        def visit_ColumnDefinition(o)
-          sql = super
-          if o.primary_key? && o.type != :primary_key
-            sql << " PRIMARY KEY "
-            add_column_options!(sql, column_options(o))
-          end
-          sql
-        end
-
-        def add_column_options!(sql, options)
-          column = options.fetch(:column) { return super }
-          if column.type == :uuid && options[:default] =~ /\(\)/
-            sql << " DEFAULT #{options[:default]}"
-          else
-            super
-          end
-        end
-
         def type_for_column(column)
           if column.array
             @conn.lookup_cast_type("#{column.sql_type}[]")

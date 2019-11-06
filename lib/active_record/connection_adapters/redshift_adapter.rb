@@ -656,8 +656,8 @@ module ActiveRecord
           $1.strip if $1
         end
 
-        def create_table_definition(name, temporary, options, as = nil) # :nodoc:
-          Redshift::TableDefinition.new native_database_types, name, temporary, options, as
+        def create_table_definition(name, temporary = false, options = nil, as = nil, comment: nil) # :nodoc:
+          Redshift::TableDefinition.new name, temporary, options, as, comment: comment
         end
     end
   end
