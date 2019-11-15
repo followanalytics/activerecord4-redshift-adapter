@@ -11,8 +11,6 @@ require 'active_record/connection_adapters/redshift/schema_statements'
 require 'active_record/connection_adapters/redshift/type_metadata'
 require 'active_record/connection_adapters/redshift/database_statements'
 
-require 'arel/visitors/bind_visitor'
-
 # Make sure we're using pg high enough for PG::Result#values
 gem 'pg', '>= 1.0'
 require 'pg'
