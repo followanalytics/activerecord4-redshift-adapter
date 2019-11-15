@@ -2,7 +2,7 @@ module ActiveRecord
   module ConnectionAdapters
     module Redshift
       module OID # :nodoc:
-        class Jsonb < Json # :nodoc:
+        class Jsonb < Type::Json # :nodoc:
           def type
             :jsonb
           end
